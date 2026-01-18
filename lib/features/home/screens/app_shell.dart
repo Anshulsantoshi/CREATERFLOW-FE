@@ -1,13 +1,10 @@
-// lib/features/home/screens/app_shell.dart mein ye badal:
-
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
-import 'home_screen.dart';
-import 'explore_screen.dart';
-// Sahi paths:
-import '../../profile/screens/profile_screen.dart'; 
-import '../../subscription/screens/my_subscriptions_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax/iconsax.dart'; // Ensure this exists (maybe renamed later if needed)
 import 'fan_feed_screen.dart';
+import 'learning_hub_screen.dart'; // NEW IMPORT
+import '../../profile/screens/profile_screen.dart'; // Apne hisab se path set kar lena
+
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
   @override
@@ -17,43 +14,33 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   int index = 0;
 
- final pages = const [
-  FanFeedScreen(),       // Pehla Tab ab Feed dikhayega (Instagram style)
-  HomeScreen(),          // Doosra Tab 'Discover' (Creators list) dikhayega
-  ExploreScreen(), 
-  ProfileScreen(),
-];
+  final pages = const [
+    FanFeedScreen(),       // 0: Reels/Discovery (TikTok Style)
+    LearningHubScreen(),   // 1: My Learning (Purchased Content)
+    // HomeScreen(),       // 2: Option: Creator List (Agar chahiye toh)
+    ProfileScreen(),       // 3: User Profile
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF050505),
-      body: IndexedStack( // IndexedStack use karne se page state save rehti hai
+      backgroundColor: Colors.black,
+      body: IndexedStack(
         index: index,
         children: pages,
       ),
       bottomNavigationBar: Container(
-        height: 85,
-        margin: const EdgeInsets.fromLTRB(24, 0, 24, 30),
+        height: 80,
         decoration: BoxDecoration(
-          color: const Color(0xFF151515),
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: Colors.white.withOpacity(0.05)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.5), 
-              blurRadius: 20, 
-              offset: const Offset(0, 10)
-            )
-          ],
+          color: Colors.black,
+          border: const Border(top: BorderSide(color: Colors.white10)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _NavItem(icon: Iconsax.home_1, active: index == 0, onTap: () => setState(() => index = 0)),
-            _NavItem(icon: Iconsax.discover_1, active: index == 1, onTap: () => setState(() => index = 1)),
-            _NavItem(icon: Iconsax.medal_star, active: index == 2, onTap: () => setState(() => index = 2)),
-            _NavItem(icon: Iconsax.user, active: index == 3, onTap: () => setState(() => index = 3)),
+            _NavItem(icon: Iconsax.video_play, label: "Feed", active: index == 0, onTap: () => setState(() => index = 0)),
+            _NavItem(icon: Iconsax.book_1, label: "Library", active: index == 1, onTap: () => setState(() => index = 1)),
+            _NavItem(icon: Iconsax.user, label: "Profile", active: index == 2, onTap: () => setState(() => index = 2)),
           ],
         ),
       ),
@@ -63,9 +50,10 @@ class _AppShellState extends State<AppShell> {
 
 class _NavItem extends StatelessWidget {
   final IconData icon;
+  final String label;
   final bool active;
   final VoidCallback onTap;
-  const _NavItem({required this.icon, required this.active, required this.onTap});
+  const _NavItem({required this.icon, required this.label, required this.active, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -74,24 +62,9 @@ class _NavItem extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            icon, 
-            color: active ? Colors.cyan : Colors.white38, 
-            size: 26
-          ),
+          Icon(icon, color: active ? const Color(0xFF8A2BE2) : Colors.white38, size: 26),
           const SizedBox(height: 4),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            height: 4, 
-            width: active ? 4 : 0,
-            decoration: BoxDecoration(
-              color: Colors.cyan, 
-              shape: BoxShape.circle, 
-              boxShadow: [
-                BoxShadow(color: Colors.cyan.withOpacity(0.5), blurRadius: 10)
-              ]
-            ),
-          ),
+          Text(label, style: GoogleFonts.inter(color: active ? Colors.white : Colors.white38, fontSize: 10)),
         ],
       ),
     );
