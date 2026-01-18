@@ -16,25 +16,34 @@ class LandingPage extends StatelessWidget {
           children: [
             const SizedBox(height: 80),
             // Hero Section
-            FadeInDown(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  children: [
-                    Container(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                children: [
+                  FadeInDown(
+                    duration: const Duration(milliseconds: 800),
+                    child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(color: Colors.cyan.withOpacity(0.1), borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.cyan.withOpacity(0.3))),
                       child: Text("CREATORS KI APNI DUNIYA", style: GoogleFonts.outfit(color: Colors.cyan, fontWeight: FontWeight.bold, fontSize: 12)),
                     ),
-                    const SizedBox(height: 20),
-                    Text("Turn Your Content Into\nReal Income 💰", textAlign: TextAlign.center, style: GoogleFonts.outfit(fontSize: 38, fontWeight: FontWeight.w900, color: Colors.white, height: 1.1)),
-                    const SizedBox(height: 20),
-                    Text("The most creator-friendly platform with only 2% commission and instant UPI payouts.", textAlign: TextAlign.center, style: GoogleFonts.outfit(color: Colors.white54, fontSize: 16)),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 20),
+                  FadeInUp(
+                    duration: const Duration(milliseconds: 1000),
+                    delay: const Duration(milliseconds: 200),
+                    child: Text("Turn Your Content Into\nReal Income 💰", textAlign: TextAlign.center, style: GoogleFonts.outfit(fontSize: 38, fontWeight: FontWeight.w900, color: Colors.white, height: 1.1)),
+                  ),
+                  const SizedBox(height: 20),
+                  FadeInUp(
+                    duration: const Duration(milliseconds: 1000),
+                    delay: const Duration(milliseconds: 400),
+                    child: Text("The most creator-friendly platform with only 2% commission and instant UPI payouts.", textAlign: TextAlign.center, style: GoogleFonts.outfit(color: Colors.white54, fontSize: 16)),
+                  ),
+                ],
               ),
             ),
-            
+
             const SizedBox(height: 50),
 
             // Features Grid
@@ -42,11 +51,11 @@ class LandingPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 children: [
-                  _MarketingCard(icon: Iconsax.percentage_circle, title: "2% Commission", desc: "Keep 98% of what you earn. No hidden charges."),
+                  FadeInLeft(delay: const Duration(milliseconds: 500), child: _MarketingCard(icon: Iconsax.percentage_circle, title: "2% Commission", desc: "Keep 98% of what you earn. No hidden charges.")),
                   const SizedBox(height: 16),
-                  _MarketingCard(icon: Iconsax.flash_1, title: "Instant UPI Payouts", desc: "Get your money in your bank account within seconds."),
+                  FadeInLeft(delay: const Duration(milliseconds: 600), child: _MarketingCard(icon: Iconsax.flash_1, title: "Instant UPI Payouts", desc: "Get your money in your bank account within seconds.")),
                   const SizedBox(height: 16),
-                  _MarketingCard(icon: Iconsax.security_user, title: "Fan Verification", desc: "Elite privacy for your premium content and subscribers."),
+                  FadeInLeft(delay: const Duration(milliseconds: 700), child: _MarketingCard(icon: Iconsax.security_user, title: "Fan Verification", desc: "Elite privacy for your premium content and subscribers.")),
                 ],
               ),
             ),
@@ -55,6 +64,7 @@ class LandingPage extends StatelessWidget {
 
             // Call to Action
             FadeInUp(
+              delay: const Duration(milliseconds: 800),
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: GestureDetector(

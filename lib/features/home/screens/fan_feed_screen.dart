@@ -1,203 +1,204 @@
-
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:animate_do/animate_do.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:go_router/go_router.dart';
+import 'package:animate_do/animate_do.dart';
+import 'course_detail_screen.dart'; // Ensure import
 
 class FanFeedScreen extends StatelessWidget {
   const FanFeedScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Mock Data for the Feed
-    final posts = [
+    // Mock Data for Reels
+    final reels = [
       {
+        "title": "30-Day Shred Transformation",
         "creator": "Fitness with Aman",
-        "avatar": "https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=200",
-        "image": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800",
-        "caption": "Pehla workout session free hai dosto! Dekho aur seekho. 💪",
-        "isPremium": false,
-        "price": "0"
+        "price": "499",
+        "image": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80",
+        "tag": "Fitness"
       },
       {
+        "title": "Master Procreate in 1 Week",
         "creator": "Art by Riya",
-        "avatar": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=200",
-        "image": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800",
-        "caption": "My secret portrait techniques. Exclusive for Pro members only. 🎨",
-        "isPremium": true,
-        "price": "199"
+        "price": "299",
+        "image": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&q=80",
+        "tag": "Art"
       },
       {
-        "creator": "Tech with Karan",
-        "avatar": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=200",
-        "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800",
-        "caption": "Next-level Flutter UI secrets revealed in this premium post.",
-        "isPremium": true,
-        "price": "499"
+        "title": "Cinematic Editing Secrets",
+        "creator": "Rahul Edits",
+        "price": "999",
+        "image": "https://images.unsplash.com/photo-1536240478700-b869070f9279?w=800&q=80",
+        "tag": "Photography"
       },
     ];
 
     return Scaffold(
-      backgroundColor: const Color(0xFF050505),
-      body: ListView.builder(
-        itemCount: posts.length,
-        // Bottom padding ensures the last post isn't hidden behind the Nav Bar
-        padding: const EdgeInsets.fromLTRB(16, 10, 16, 120), 
+      backgroundColor: Colors.black,
+      body: PageView.builder(
+        scrollDirection: Axis.vertical, // TikTok Style
+        itemCount: reels.length,
         itemBuilder: (context, index) {
-          return FadeInUp(
-            duration: const Duration(milliseconds: 500),
-            delay: Duration(milliseconds: index * 150),
-            child: _FeedPostCard(post: posts[index]),
-          );
+          return _ReelItem(data: reels[index]);
         },
       ),
     );
   }
 }
 
-class _FeedPostCard extends StatelessWidget {
-  final Map<String, dynamic> post;
-  const _FeedPostCard({required this.post});
+class _ReelItem extends StatelessWidget {
+  final Map<String, String> data;
+  const _ReelItem({required this.data});
 
   @override
   Widget build(BuildContext context) {
-    bool isPremium = post['isPremium'];
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // 1. BACKGROUND IMAGE (Simulating Video)
+        Image.network(
+          data['image']!,
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return const Center(child: CircularProgressIndicator(color: Color(0xFF8A2BE2)));
+          },
+        ),
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: Colors.white.withOpacity(0.06)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min, // Prevents unnecessary stretching
-        children: [
-          // --- POST HEADER ---
-          Padding(
-            padding: const EdgeInsets.all(14.0),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 18,
-                  backgroundColor: Colors.white10,
-                  backgroundImage: NetworkImage(post['avatar']),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  post['creator'], 
-                  style: GoogleFonts.outfit(
-                    color: Colors.white, 
-                    fontWeight: FontWeight.bold, 
-                    fontSize: 15
-                  )
-                ),
-                const Spacer(),
-                const Icon(Iconsax.more, color: Colors.white38, size: 18),
+        // 2. GRADIENT OVERLAY (Readability ke liye)
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black.withOpacity(0.3),
+                Colors.transparent,
+                Colors.black.withOpacity(0.9), // Bottom dark for text
               ],
+              stops: const [0.0, 0.5, 1.0],
             ),
           ),
-          
-          // --- IMAGE SECTION (SIZE ADJUSTED) ---
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(22),
-              child: Stack(
-                children: [
-                  AspectRatio(
-                    // Adjusted from 1.0 (Square) to 1.3 (Slightly wider/smaller height)
-                    aspectRatio: 1.3, 
-                    child: Image.network(
-                      post['image'], 
-                      fit: BoxFit.cover,
-                      // Error handling for dead links like in Riya's case
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: Colors.white.withOpacity(0.05),
-                        child: const Icon(Iconsax.image, color: Colors.white24, size: 30),
-                      ),
-                    ),
+        ),
+
+        // 3. CONTENT OVERLAY
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Tag
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.white10),
                   ),
-                  
-                  // --- PREMIUM PARDA (BLUR OVERLAY) ---
-                  if (isPremium)
-                    Positioned.fill(
-                      child: ClipRRect(
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-                          child: Container(
-                            color: Colors.black.withOpacity(0.45),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Iconsax.lock5, color: Colors.white, size: 40),
-                                const SizedBox(height: 12),
-                                ElevatedButton(
-                                  onPressed: () => context.push('/subscribe/1'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.cyan,
-                                    foregroundColor: Colors.black,
-                                    elevation: 10,
-                                    shadowColor: Colors.cyan.withOpacity(0.4),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                  ),
-                                  child: Text(
-                                    "Unlock for ₹${post['price']}", 
-                                    style: GoogleFonts.outfit(fontWeight: FontWeight.w900, fontSize: 13)
-                                  ),
-                                ),
-                              ],
-                            ),
+                  child: Text(
+                    data['tag']!,
+                    style: GoogleFonts.inter(color: Colors.white, fontSize: 12),
+                  ),
+                ),
+                const SizedBox(height: 10),
+
+                // Title & Creator
+                Text(
+                  data['title']!,
+                  style: GoogleFonts.inter(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w900,
+                      height: 1.1
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Row(
+                  children: [
+                    const CircleAvatar(radius: 10, backgroundImage: NetworkImage("https://i.pravatar.cc/150?img=12")),
+                    const SizedBox(width: 8),
+                    Text(
+                      data['creator']!,
+                      style: GoogleFonts.inter(color: Colors.white70, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 25),
+
+                // 4. CTA BUTTON (Impulse Buy) & ACTIONS
+                Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          // Navigate to Product Page
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const CourseDetailsScreen()));
+                        },
+                        child: Container(
+                          height: 55,
+                          decoration: BoxDecoration(
+                              gradient: const LinearGradient(colors: [Color(0xFF8A2BE2), Color(0xFF00B4DB)]),
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(color: const Color(0xFF8A2BE2).withOpacity(0.5), blurRadius: 20, offset: const Offset(0, 5))
+                              ]
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Iconsax.unlock, color: Colors.white, size: 20),
+                              const SizedBox(width: 10),
+                              Text(
+                                "Unlock Full Course @ ₹${data['price']}",
+                                style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
-                ],
-              ),
-            ),
-          ),
-
-          // --- ACTION BUTTONS (LIKE, COMMENT, SEND) ---
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-            child: Row(
-              children: [
-                const Icon(Iconsax.heart, color: Colors.white, size: 22),
-                const SizedBox(width: 18),
-                const Icon(Iconsax.message, color: Colors.white, size: 22),
-                const SizedBox(width: 18),
-                const Icon(Iconsax.send_1, color: Colors.white, size: 22),
-                const Spacer(),
-                const Icon(Iconsax.archive_1, color: Colors.white, size: 22),
+                    const SizedBox(width: 15),
+                    // Like/Share Column
+                    Column(
+                      children: [
+                        _SideAction(icon: Iconsax.heart, label: "1.2k"),
+                        const SizedBox(height: 15),
+                        _SideAction(icon: Iconsax.share, label: "Share"),
+                      ],
+                    )
+                  ],
+                ),
+                const SizedBox(height: 40), // Bottom TabBar space
               ],
             ),
           ),
+        ),
+      ],
+    );
+  }
+}
 
-          // --- CAPTION SECTION ---
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: "${post['creator']} ", 
-                    style: GoogleFonts.outfit(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 14)
-                  ),
-                  TextSpan(
-                    text: post['caption'], 
-                    style: GoogleFonts.outfit(color: Colors.white70, fontWeight: FontWeight.w300, fontSize: 13)
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 4),
-        ],
-      ),
+class _SideAction extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  const _SideAction({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withOpacity(0.1)),
+          child: Icon(icon, color: Colors.white, size: 24),
+        ),
+        const SizedBox(height: 4),
+        Text(label, style: GoogleFonts.inter(color: Colors.white, fontSize: 10)),
+      ],
     );
   }
 }
